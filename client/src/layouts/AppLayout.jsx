@@ -3,11 +3,9 @@ import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   Compass,
   LayoutDashboard,
-  CheckSquare,
   Calendar,
   BarChart3,
   Server,
-  Database,
   CheckCircle2,
   AlertCircle,
   Menu,
@@ -60,126 +58,114 @@ export default function AppLayout() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#090d16] text-slate-100">
+    <div className="flex min-h-screen bg-[#F5F0E7] text-[#302C27] font-sans antialiased">
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col border-r border-slate-800/80 bg-[#0c1220]/95 backdrop-blur-md">
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col border-r border-[#DED5C7] bg-[#EDE5D8]/80 backdrop-blur-md">
         {/* Brand */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800/80">
-          <div className="h-9 w-9 rounded-lg bg-brand-600/20 border border-brand-500/40 flex items-center justify-center text-brand-400">
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-[#DED5C7]/80 bg-[#EDE5D8]">
+          <div className="h-9 w-9 rounded-lg bg-[#EEF2EC] border border-[#C5CDC0] flex items-center justify-center text-[#68745B] shadow-sm">
             <Compass className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+            <h1 className="text-base font-serif font-bold tracking-tight text-[#302C27] flex items-center gap-2">
               CoursePilot
-              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                PROD
+              <span className="text-[10px] font-sans font-medium uppercase px-1.5 py-0.5 rounded bg-[#EEF2EC] text-[#68745B] border border-[#C5CDC0]">
+                v1.0
               </span>
             </h1>
-            <p className="text-xs text-slate-400">Academic Planning SaaS</p>
+            <p className="text-[11px] text-[#777064]">Academic Workspace</p>
           </div>
         </div>
 
         {/* User Card */}
         {user && (
-          <div className="mx-3 mt-4 p-3 rounded-xl border border-slate-800/80 bg-[#0f172a]/80 flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-brand-600/20 text-brand-400 border border-brand-500/30 flex items-center justify-center font-bold text-xs uppercase">
+          <div className="mx-3 mt-4 p-3 rounded-xl border border-[#DED5C7] bg-[#FFFCF6] shadow-paper flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-[#F9F3EC] text-[#B78A65] border border-[#DFCEBD] flex items-center justify-center font-bold text-xs uppercase shadow-xs">
               {user.name ? user.name.charAt(0) : 'S'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-slate-100 truncate">{user.name}</p>
-              <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
+              <p className="text-xs font-semibold text-[#302C27] truncate">{user.name}</p>
+              <p className="text-[11px] text-[#777064] truncate">{user.email}</p>
             </div>
           </div>
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 space-y-1.5">
+        <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            if (item.phase) {
-              return (
-                <div
-                  key={item.name}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-slate-500 cursor-not-allowed select-none"
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className="h-4 w-4" />
-                    <span>{item.name}</span>
-                  </div>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/50">
-                    {item.phase}
-                  </span>
-                </div>
-              );
-            }
-
             return (
               <NavLink
                 key={item.name}
                 to={item.to}
                 end
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-brand-600/15 text-brand-300 border border-brand-500/30'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-[#FFFCF6] text-[#302C27] border border-[#DED5C7] shadow-paper font-semibold translate-x-0.5'
+                      : 'text-[#777064] hover:text-[#302C27] hover:bg-[#F5EFE4]'
                   }`
                 }
               >
-                <Icon className="h-4 w-4 text-brand-400" />
-                <span>{item.name}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      className={`h-4 w-4 transition-colors ${
+                        isActive ? 'text-[#68745B]' : 'text-[#777064]'
+                      }`}
+                    />
+                    <span>{item.name}</span>
+                  </>
+                )}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* System Connectivity Diagnostics */}
-        <div className="p-4 mx-3 mb-4 rounded-xl border border-slate-800 bg-[#0f172a]/70">
+        {/* System Diagnostics */}
+        <div className="p-3.5 mx-3 mb-3 rounded-xl border border-[#DED5C7] bg-[#FFFCF6] shadow-paper">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Server className="h-3 w-3" /> System Health
+            <span className="text-[11px] font-semibold text-[#777064] flex items-center gap-1.5 uppercase tracking-wider">
+              <Server className="h-3 w-3 text-[#68745B]" /> System Health
             </span>
             <button
               onClick={fetchHealth}
               title="Refresh health status"
-              className="text-[11px] text-brand-400 hover:text-brand-300 transition-colors"
+              className="text-[10px] text-[#68745B] hover:text-[#56614A] font-medium transition-colors"
             >
-              Refresh
+              Check
             </button>
           </div>
 
-          <div className="space-y-2 text-xs">
-            {/* Backend API */}
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Express API</span>
+          <div className="space-y-1.5 text-[11px]">
+            {/* Express API */}
+            <div className="flex items-center justify-between py-0.5 border-b border-[#EAE2D5]">
+              <span className="text-[#777064]">Express API</span>
               {health.loading ? (
-                <span className="text-slate-500">Connecting...</span>
+                <span className="text-[#9A9285]">Checking...</span>
               ) : health.data ? (
-                <span className="flex items-center gap-1 text-emerald-400 font-medium">
-                  <CheckCircle2 className="h-3 w-3" /> Online
+                <span className="flex items-center gap-1 text-[#4E6B50] font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#4E6B50]"></span> Online
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-rose-400 font-medium">
-                  <AlertCircle className="h-3 w-3" /> Offline
+                <span className="flex items-center gap-1 text-[#B94A3E] font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#B94A3E]"></span> Offline
                 </span>
               )}
             </div>
 
-            {/* Database */}
-            <div className="flex items-center justify-between py-1">
-              <span className="text-slate-400">MongoDB Atlas</span>
+            {/* MongoDB Atlas */}
+            <div className="flex items-center justify-between py-0.5">
+              <span className="text-[#777064]">MongoDB Atlas</span>
               {health.loading ? (
-                <span className="text-slate-500">Checking...</span>
+                <span className="text-[#9A9285]">Checking...</span>
               ) : health.data?.database?.ready ? (
-                <span className="flex items-center gap-1 text-emerald-400 font-medium">
-                  <CheckCircle2 className="h-3 w-3" /> Connected
+                <span className="flex items-center gap-1 text-[#4E6B50] font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#4E6B50]"></span> Connected
                 </span>
               ) : (
-                <span
-                  className="flex items-center gap-1 text-amber-400 font-medium"
-                  title="Configure MONGODB_URI in server/.env to enable persistence"
-                >
-                  <AlertCircle className="h-3 w-3" /> Disconnected
+                <span className="flex items-center gap-1 text-[#C87A3E] font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#C87A3E]"></span> Pending
                 </span>
               )}
             </div>
@@ -187,11 +173,11 @@ export default function AppLayout() {
         </div>
 
         {/* Footer with sign out */}
-        <div className="px-4 py-3 border-t border-slate-800/80 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500 font-medium">CoursePilot v1.0 (Live)</span>
+        <div className="px-4 py-3 border-t border-[#DED5C7] flex items-center justify-between bg-[#EDE5D8]">
+          <span className="text-[11px] text-[#777064] font-medium">CoursePilot</span>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 transition-colors px-2 py-1 rounded-md hover:bg-slate-800/60"
+            className="flex items-center gap-1.5 text-xs text-[#777064] hover:text-[#B94A3E] transition-colors px-2 py-1 rounded-md hover:bg-[#F5EFE4]"
             title="Sign out of CoursePilot"
           >
             <LogOut className="h-3.5 w-3.5" />
@@ -203,19 +189,19 @@ export default function AppLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-slate-800/80 bg-[#0c1220]/70 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-16 border-b border-[#DED5C7] bg-[#FFFCF6]/90 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 shadow-paper">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              className="lg:hidden p-2 rounded-lg text-[#777064] hover:text-[#302C27] hover:bg-[#EDE5D8] transition-colors"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-              <span>CoursePilot</span>
+            <div className="hidden sm:flex items-center gap-2 text-xs text-[#777064]">
+              <span className="font-serif font-medium text-[#302C27]">CoursePilot</span>
               <span>/</span>
-              <span className="text-slate-200 font-medium">Academic Workspace</span>
+              <span className="text-[#777064]">Academic Workspace</span>
             </div>
           </div>
 
@@ -223,12 +209,12 @@ export default function AppLayout() {
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="hidden md:block text-right">
-                  <p className="text-xs font-semibold text-slate-100">{user.name}</p>
-                  <p className="text-[11px] text-slate-400">{user.email}</p>
+                  <p className="text-xs font-semibold text-[#302C27]">{user.name}</p>
+                  <p className="text-[11px] text-[#777064]">{user.email}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 text-slate-300 hover:text-rose-400 hover:border-rose-500/40 hover:bg-rose-500/10 transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#DED5C7] bg-[#FFFCF6] text-[#777064] hover:text-[#B94A3E] hover:border-[#E8BDB7] hover:bg-[#FBEBE8] transition-all shadow-paper active:scale-[0.98]"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   <span>Logout</span>
@@ -238,13 +224,13 @@ export default function AppLayout() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg text-[#777064] hover:text-[#302C27] hover:bg-[#EDE5D8] transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors"
+                  className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white transition-all shadow-paper active:scale-[0.98]"
                 >
                   Get Started
                 </Link>
@@ -255,33 +241,33 @@ export default function AppLayout() {
 
         {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-slate-800 bg-[#0c1220] px-4 py-3 space-y-2">
+          <div className="lg:hidden border-b border-[#DED5C7] bg-[#EDE5D8] px-4 py-3 space-y-2 animate-fade-down shadow-paper">
             {user && (
-              <div className="pb-2 border-b border-slate-800 text-xs">
-                <p className="font-semibold text-white">{user.name}</p>
-                <p className="text-slate-400">{user.email}</p>
+              <div className="pb-2 border-b border-[#DED5C7] text-xs">
+                <p className="font-semibold text-[#302C27]">{user.name}</p>
+                <p className="text-[#777064]">{user.email}</p>
               </div>
             )}
-            {navItems.map((item) =>
-              item.phase ? (
-                <div key={item.name} className="py-1.5 text-sm text-slate-500">
-                  {item.name} <span className="text-xs text-slate-600">({item.phase})</span>
-                </div>
-              ) : (
-                <NavLink
-                  key={item.name}
-                  to={item.to}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block py-1.5 text-sm text-slate-300 hover:text-white"
-                >
-                  {item.name}
-                </NavLink>
-              )
-            )}
+            {navItems.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.to}
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'bg-[#FFFCF6] text-[#302C27] font-semibold border border-[#DED5C7]'
+                      : 'text-[#777064] hover:text-[#302C27] hover:bg-[#F5EFE4]'
+                  }`
+                }
+              >
+                {item.name}
+              </NavLink>
+            ))}
             {user && (
               <button
                 onClick={handleLogout}
-                className="w-full text-left py-2 text-sm text-rose-400 flex items-center gap-2"
+                className="w-full text-left py-2 px-3 text-xs font-medium text-[#B94A3E] hover:bg-[#FBEBE8] rounded-lg flex items-center gap-2 transition-colors"
               >
                 <LogOut className="h-4 w-4" /> Sign Out
               </button>
@@ -290,7 +276,7 @@ export default function AppLayout() {
         )}
 
         {/* Page Outlet */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto animate-fade-in">
           <Outlet />
         </main>
       </div>

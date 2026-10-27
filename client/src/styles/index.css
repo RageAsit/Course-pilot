@@ -4,32 +4,57 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
     margin: 0;
     padding: 0;
-    background-color: #090d16;
-    color: #f1f5f9;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #F5F0E7;
+    color: #302C27;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom subtle scrollbar */
+  /* Custom subtle paper scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #090d16;
+    background: #EDE5D8;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1e293b;
+    background: #DED5C7;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
+    background: #B78A65;
+  }
+}
+
+@layer utilities {
+  /* Subtle paper card border styling */
+  .border-paper {
+    border-color: #DED5C7;
+  }
+  .border-paper-subtle {
+    border-color: #EAE2D5;
+  }
+  .bg-paper {
+    background-color: #FFFCF6;
+  }
+  .bg-paper-subtle {
+    background-color: #EDE5D8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

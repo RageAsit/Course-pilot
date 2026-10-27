@@ -6,7 +6,6 @@ import {
   Circle,
   Calendar,
   Clock,
-  Tag,
   AlertTriangle,
   Trash2,
   Edit3,
@@ -14,14 +13,9 @@ import {
   X,
   Search,
   BookOpen,
-  Filter,
-  Check,
-  RotateCcw,
   Zap,
   Flame,
-  Sparkles,
   ArrowRight,
-  ShieldAlert,
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -118,7 +112,7 @@ export default function DashboardPage() {
   const handleOpenCreate = () => {
     setEditingId(null);
     setFormError('');
-    // Default dueDate to tomorrow at 23:59
+
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const dateStr = tomorrow.toISOString().split('T')[0];
@@ -268,17 +262,17 @@ export default function DashboardPage() {
       {/* Top Banner / Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Assignments & Tasks
+          <h2 className="text-2xl font-serif font-bold tracking-tight text-[#302C27] sm:text-3xl">
+            Assignments & Coursework
           </h2>
-          <p className="mt-1 text-xs text-slate-400">
-            Authenticated workspace for <span className="text-slate-200 font-medium">{user?.name}</span>. Data persists in MongoDB Atlas.
+          <p className="mt-1 text-xs text-[#777064]">
+            Academic workspace for <span className="text-[#302C27] font-medium">{user?.name}</span>. Data synchronizes live with MongoDB Atlas.
           </p>
         </div>
 
         <button
           onClick={handleOpenCreate}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-colors shadow-md shadow-brand-950/40"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white font-semibold text-xs transition-all shadow-paper active:scale-[0.98]"
         >
           <Plus className="h-4 w-4" />
           <span>New Assignment</span>
@@ -287,28 +281,28 @@ export default function DashboardPage() {
 
       {/* Immediate Deadline & Conflict Alert Banner */}
       {(overdueAssignments.length > 0 || dueSoonAssignments.length > 0) && (
-        <div className="rounded-xl border border-rose-500/30 bg-gradient-to-r from-rose-950/40 via-[#0f172a] to-[#0f172a] p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-lg shadow-rose-950/20">
+        <div className="rounded-xl border border-[#E8BDB7] bg-[#FDF6F5] p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-paper">
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-400 shrink-0">
+            <div className="p-2 rounded-lg bg-[#FBEBE8] border border-[#E8BDB7] text-[#B94A3E] shrink-0">
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h4 className="text-sm font-bold text-white">Action Required</h4>
+                <h4 className="text-sm font-semibold text-[#302C27]">Action Required</h4>
                 {overdueAssignments.length > 0 && (
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#FBEBE8] text-[#B94A3E] border border-[#E8BDB7] flex items-center gap-1">
                     <Flame className="h-3 w-3" />
                     {overdueAssignments.length} Overdue
                   </span>
                 )}
                 {dueSoonAssignments.length > 0 && (
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#FBF2E9] text-[#C87A3E] border border-[#E7CCA8] flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     {dueSoonAssignments.length} Due within 24h
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-300 mt-1">
+              <p className="text-xs text-[#777064] mt-1">
                 {overdueAssignments.length > 0
                   ? `You have ${overdueAssignments.length} overdue task(s) needing immediate attention or rescheduling.`
                   : `You have ${dueSoonAssignments.length} assignment(s) due today. Review study schedules to prevent missed deadlines.`}
@@ -321,14 +315,14 @@ export default function DashboardPage() {
                 setViewMode('priorities');
                 fetchPriorities();
               }}
-              className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 text-xs font-semibold transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#FFFCF6] hover:bg-[#FBEBE8] text-[#B94A3E] border border-[#E8BDB7] text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
             >
-              <Zap className="h-3.5 w-3.5 text-rose-400" />
+              <Zap className="h-3.5 w-3.5 text-[#B94A3E]" />
               <span>Inspect Priorities</span>
             </button>
             <Link
               to="/schedule"
-              className="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-paper active:scale-[0.98]"
             >
               <span>Auto-Plan Study</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -338,18 +332,18 @@ export default function DashboardPage() {
       )}
 
       {/* Filters & Search */}
-      <div className="rounded-xl border border-slate-800 bg-[#0f172a]/70 p-4 backdrop-blur-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="rounded-xl border border-[#DED5C7] bg-[#FFFCF6] p-3 shadow-paper flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Status & Priority Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-lg bg-[#090d16] border border-slate-800/80">
+        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#EDE5D8] border border-[#DED5C7]">
           <button
             onClick={() => {
               setViewMode('assignments');
               setStatusFilter('all');
             }}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               viewMode === 'assignments' && statusFilter === 'all'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#FFFCF6] text-[#302C27] font-semibold shadow-paper'
+                : 'text-[#777064] hover:text-[#302C27]'
             }`}
           >
             All ({assignments.length})
@@ -359,10 +353,10 @@ export default function DashboardPage() {
               setViewMode('assignments');
               setStatusFilter('pending');
             }}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               viewMode === 'assignments' && statusFilter === 'pending'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#FFFCF6] text-[#302C27] font-semibold shadow-paper'
+                : 'text-[#777064] hover:text-[#302C27]'
             }`}
           >
             Pending ({pendingCount})
@@ -372,10 +366,10 @@ export default function DashboardPage() {
               setViewMode('assignments');
               setStatusFilter('completed');
             }}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               viewMode === 'assignments' && statusFilter === 'completed'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#FFFCF6] text-[#302C27] font-semibold shadow-paper'
+                : 'text-[#777064] hover:text-[#302C27]'
             }`}
           >
             Completed ({completedCount})
@@ -385,51 +379,51 @@ export default function DashboardPage() {
               setViewMode('priorities');
               fetchPriorities();
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
               viewMode === 'priorities'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
-                : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
+                ? 'bg-[#F9F3EC] text-[#B78A65] border border-[#DFCEBD] shadow-paper'
+                : 'text-[#B78A65] hover:bg-[#F9F3EC]'
             }`}
           >
-            <Zap className="h-3.5 w-3.5 text-amber-400" />
+            <Zap className="h-3.5 w-3.5 text-[#B78A65]" />
             <span>Priority Queue ({priorities.length})</span>
           </button>
         </div>
 
         {/* Search by subject */}
         <div className="relative flex-1 sm:max-w-xs">
-          <Search className="h-3.5 w-3.5 text-slate-500 absolute left-3 top-2.5" />
+          <Search className="h-3.5 w-3.5 text-[#9A9285] absolute left-3 top-3" />
           <input
             type="text"
             placeholder="Filter by subject (e.g. CS101)..."
             value={subjectQuery}
             onChange={(e) => setSubjectQuery(e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-[#090d16]/90 pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
+            className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] pl-8 pr-3 py-2 text-xs text-[#302C27] placeholder-[#9A9285] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
           />
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* PRIORITY QUEUE VIEW (PHASE 3 DETERMINISTIC ENGINE)            */}
+      {/* PRIORITY QUEUE VIEW (DETERMINISTIC 40/30/20/10 ENGINE)         */}
       {/* ============================================================== */}
       {viewMode === 'priorities' && (
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fade-in">
           {/* Priority Engine Info Banner */}
-          <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="rounded-xl border border-[#DFCEBD] bg-[#FAF6F1] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-paper">
             <div className="flex items-start gap-3">
-              <Zap className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+              <Zap className="h-5 w-5 text-[#B78A65] shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-xs font-bold text-amber-200">
-                  Phase 3 Priority Engine (0–100 Deterministic Scoring)
+                <h4 className="text-xs font-bold text-[#302C27]">
+                  Deterministic Priority Engine (0–100 Scale)
                 </h4>
-                <p className="text-[11px] text-amber-200/80 mt-0.5">
+                <p className="text-[11px] text-[#777064] mt-0.5">
                   Calculated from: Urgency (40%), Importance (30%), Effort (20%), and Overdue Status (10%). Completed tasks are excluded.
                 </p>
               </div>
             </div>
             <Link
               to="/schedule"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition-colors shrink-0 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white text-xs font-semibold transition-colors shrink-0 shadow-paper active:scale-[0.98]"
             >
               <span>Generate Study Schedule</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -438,7 +432,7 @@ export default function DashboardPage() {
 
           {/* Priority calculation error */}
           {priorityError && (
-            <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-4 text-xs text-rose-200">
+            <div className="rounded-xl border border-[#E8BDB7] bg-[#FBEBE8] p-4 text-xs text-[#B94A3E]">
               {priorityError}
             </div>
           )}
@@ -449,7 +443,7 @@ export default function DashboardPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-28 rounded-xl border border-slate-800 bg-[#0f172a]/40 p-4 animate-pulse"
+                  className="h-28 rounded-xl border border-[#DED5C7] bg-[#FFFCF6] p-4 animate-pulse shadow-paper"
                 />
               ))}
             </div>
@@ -457,10 +451,10 @@ export default function DashboardPage() {
 
           {/* Empty priorities state */}
           {!loadingPriorities && priorities.length === 0 && (
-            <div className="rounded-2xl border border-slate-800 bg-[#0f172a]/40 p-12 text-center">
-              <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400 mb-2" />
-              <h3 className="text-sm font-semibold text-white">No Active Tasks in Priority Queue</h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+            <div className="rounded-2xl border border-[#DED5C7] bg-[#FFFCF6] p-12 text-center shadow-paper">
+              <CheckCircle2 className="mx-auto h-10 w-10 text-[#4E6B50] mb-2" />
+              <h3 className="text-sm font-serif font-semibold text-[#302C27]">No Active Tasks in Priority Queue</h3>
+              <p className="text-xs text-[#777064] mt-1 max-w-sm mx-auto">
                 All your assignments are completed or no assignments exist. Create a pending assignment to see its real-time priority score.
               </p>
             </div>
@@ -476,10 +470,10 @@ export default function DashboardPage() {
 
                 const scoreBadgeClass =
                   score >= 75
-                    ? 'text-rose-300 border-rose-500/40 bg-rose-500/15'
+                    ? 'text-[#B94A3E] border-[#E8BDB7] bg-[#FBEBE8]'
                     : score >= 50
-                    ? 'text-amber-300 border-amber-500/40 bg-amber-500/15'
-                    : 'text-brand-300 border-brand-500/40 bg-brand-500/15';
+                    ? 'text-[#C87A3E] border-[#E7CCA8] bg-[#FBF2E9]'
+                    : 'text-[#68745B] border-[#C5CDC0] bg-[#EEF2EC]';
 
                 const dueDateFormatted = new Date(item.dueDate).toLocaleDateString(undefined, {
                   month: 'short',
@@ -490,59 +484,59 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={item.id}
-                    className={`rounded-xl border p-4.5 bg-[#0f172a]/80 transition-all ${
-                      isOverdue ? 'border-rose-500/40 shadow-sm shadow-rose-950/20' : 'border-slate-800 hover:border-slate-700'
+                    className={`rounded-xl border p-4.5 bg-[#FFFCF6] shadow-paper transition-all hover:shadow-paper-elevated ${
+                      isOverdue ? 'border-[#E8BDB7] bg-[#FDF6F5]' : 'border-[#DED5C7] hover:border-[#C9BEAD]'
                     }`}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE2D5]">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-[#090d16] border border-slate-700 flex items-center justify-center font-bold text-xs text-slate-300">
+                        <div className="h-8 w-8 rounded-lg bg-[#EDE5D8] border border-[#DED5C7] flex items-center justify-center font-bold text-xs text-[#777064]">
                           #{index + 1}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-brand-500/10 text-brand-300 border border-brand-500/20">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F9F3EC] text-[#B78A65] border border-[#DFCEBD]">
                               {item.subject}
                             </span>
                             {isOverdue && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#FBEBE8] text-[#B94A3E] border border-[#E8BDB7] flex items-center gap-1">
                                 <Flame className="h-3 w-3" /> Overdue
                               </span>
                             )}
                           </div>
-                          <h4 className="text-sm font-semibold text-white mt-1">{item.title}</h4>
+                          <h4 className="text-sm font-semibold text-[#302C27] mt-1">{item.title}</h4>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="text-right text-xs text-slate-400 hidden sm:block">
+                        <div className="text-right text-xs text-[#777064] hidden sm:block">
                           <div>Due: {dueDateFormatted}</div>
                           <div>{item.remainingMinutes}m remaining</div>
                         </div>
-                        <div className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-sm ${scoreBadgeClass} text-center min-w-[70px]`}>
-                          <span className="text-[10px] text-slate-400 block font-normal uppercase">Priority</span>
+                        <div className={`px-3 py-1.5 rounded-lg border font-mono font-bold text-sm ${scoreBadgeClass} text-center min-w-[70px] shadow-xs`}>
+                          <span className="text-[10px] text-[#777064] block font-normal uppercase tracking-wider">Priority</span>
                           {score}/100
                         </div>
                       </div>
                     </div>
 
                     {/* Natural language reason explanation */}
-                    <div className="mt-3 text-xs text-slate-300 bg-[#090d16]/80 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between gap-2">
+                    <div className="mt-3 text-xs text-[#302C27] bg-[#FAF6EE] p-2.5 rounded-lg border border-[#EAE2D5] flex items-center justify-between gap-2">
                       <div className="flex-1">
-                        <span className="text-slate-400 font-semibold">Priority Driver: </span>
+                        <span className="text-[#777064] font-semibold">Priority Driver: </span>
                         <span>{exp.summary || 'Computed from urgency, importance, and remaining effort.'}</span>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => handleToggleStatus(item)}
-                          className="p-1 rounded text-slate-400 hover:text-emerald-400 transition-colors"
+                          className="p-1 rounded text-[#777064] hover:text-[#4E6B50] transition-colors"
                           title="Mark completed"
                         >
                           <CheckCircle2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleOpenEdit(item)}
-                          className="p-1 rounded text-slate-400 hover:text-white transition-colors"
+                          className="p-1 rounded text-[#777064] hover:text-[#302C27] transition-colors"
                           title="Edit assignment"
                         >
                           <Edit3 className="h-4 w-4" />
@@ -552,53 +546,53 @@ export default function DashboardPage() {
 
                     {/* 4 Factor Breakdown Bars */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 text-[11px]">
-                      <div className="bg-[#090d16] p-2 rounded border border-slate-800/60">
-                        <div className="flex justify-between text-slate-400 mb-1">
+                      <div className="bg-[#FAF6EE] p-2 rounded border border-[#EAE2D5]">
+                        <div className="flex justify-between text-[#777064] mb-1">
                           <span>Urgency</span>
-                          <span className="font-mono">{exp.urgencyScore || 0}/40</span>
+                          <span className="font-mono text-[#302C27]">{exp.urgencyScore || 0}/40</span>
                         </div>
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#EDE5D8] h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="bg-brand-500 h-full rounded-full"
+                            className="bg-[#68745B] h-full rounded-full transition-all duration-300"
                             style={{ width: `${((exp.urgencyScore || 0) / 40) * 100}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="bg-[#090d16] p-2 rounded border border-slate-800/60">
-                        <div className="flex justify-between text-slate-400 mb-1">
+                      <div className="bg-[#FAF6EE] p-2 rounded border border-[#EAE2D5]">
+                        <div className="flex justify-between text-[#777064] mb-1">
                           <span>Importance</span>
-                          <span className="font-mono">{exp.importanceScore || 0}/30</span>
+                          <span className="font-mono text-[#302C27]">{exp.importanceScore || 0}/30</span>
                         </div>
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#EDE5D8] h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="bg-purple-500 h-full rounded-full"
+                            className="bg-[#B78A65] h-full rounded-full transition-all duration-300"
                             style={{ width: `${((exp.importanceScore || 0) / 30) * 100}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="bg-[#090d16] p-2 rounded border border-slate-800/60">
-                        <div className="flex justify-between text-slate-400 mb-1">
+                      <div className="bg-[#FAF6EE] p-2 rounded border border-[#EAE2D5]">
+                        <div className="flex justify-between text-[#777064] mb-1">
                           <span>Effort</span>
-                          <span className="font-mono">{exp.effortScore || 0}/20</span>
+                          <span className="font-mono text-[#302C27]">{exp.effortScore || 0}/20</span>
                         </div>
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#EDE5D8] h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="bg-emerald-500 h-full rounded-full"
+                            className="bg-[#CDB795] h-full rounded-full transition-all duration-300"
                             style={{ width: `${((exp.effortScore || 0) / 20) * 100}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="bg-[#090d16] p-2 rounded border border-slate-800/60">
-                        <div className="flex justify-between text-slate-400 mb-1">
+                      <div className="bg-[#FAF6EE] p-2 rounded border border-[#EAE2D5]">
+                        <div className="flex justify-between text-[#777064] mb-1">
                           <span>Overdue</span>
-                          <span className="font-mono">{exp.overdueBonus || 0}/10</span>
+                          <span className="font-mono text-[#302C27]">{exp.overdueBonus || 0}/10</span>
                         </div>
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#EDE5D8] h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="bg-rose-500 h-full rounded-full"
+                            className="bg-[#B94A3E] h-full rounded-full transition-all duration-300"
                             style={{ width: `${((exp.overdueBonus || 0) / 10) * 100}%` }}
                           />
                         </div>
@@ -616,15 +610,15 @@ export default function DashboardPage() {
       {/* STANDARD ASSIGNMENT LIST VIEW                                 */}
       {/* ============================================================== */}
       {viewMode === 'assignments' && (
-        <>
+        <div className="animate-fade-in">
           {/* Error state */}
           {error && (
-            <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-4 flex items-start gap-3">
-              <AlertTriangle className="h-4 w-4 text-rose-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-rose-200 flex-1">{error}</div>
+            <div className="rounded-xl border border-[#E8BDB7] bg-[#FBEBE8] p-4 flex items-start gap-3 shadow-paper">
+              <AlertTriangle className="h-4 w-4 text-[#B94A3E] mt-0.5 shrink-0" />
+              <div className="text-xs text-[#B94A3E] flex-1">{error}</div>
               <button
                 onClick={fetchAssignments}
-                className="text-xs font-medium text-rose-300 hover:text-rose-100 underline"
+                className="text-xs font-medium text-[#B94A3E] hover:underline"
               >
                 Retry
               </button>
@@ -637,13 +631,13 @@ export default function DashboardPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-40 rounded-xl border border-slate-800 bg-[#0f172a]/40 p-5 animate-pulse flex flex-col justify-between"
+                  className="h-40 rounded-xl border border-[#DED5C7] bg-[#FFFCF6] p-5 animate-pulse flex flex-col justify-between shadow-paper"
                 >
                   <div className="space-y-2.5">
-                    <div className="h-4 w-24 bg-slate-800 rounded" />
-                    <div className="h-5 w-48 bg-slate-800 rounded" />
+                    <div className="h-4 w-24 bg-[#EDE5D8] rounded" />
+                    <div className="h-5 w-48 bg-[#EDE5D8] rounded" />
                   </div>
-                  <div className="h-4 w-32 bg-slate-800 rounded" />
+                  <div className="h-4 w-32 bg-[#EDE5D8] rounded" />
                 </div>
               ))}
             </div>
@@ -651,12 +645,12 @@ export default function DashboardPage() {
 
           {/* Empty State */}
           {!loading && !error && assignments.length === 0 && (
-            <div className="rounded-2xl border border-slate-800 bg-[#0f172a]/40 p-12 text-center">
-              <div className="mx-auto h-12 w-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 mb-3">
+            <div className="rounded-2xl border border-[#DED5C7] bg-[#FFFCF6] p-12 text-center shadow-paper">
+              <div className="mx-auto h-12 w-12 rounded-xl bg-[#EEF2EC] border border-[#C5CDC0] flex items-center justify-center text-[#68745B] mb-3 shadow-xs">
                 <BookOpen className="h-6 w-6" />
               </div>
-              <h3 className="text-sm font-semibold text-white">No assignments found</h3>
-              <p className="mt-1 text-xs text-slate-400 max-w-sm mx-auto">
+              <h3 className="text-base font-serif font-semibold text-[#302C27]">No assignments found</h3>
+              <p className="mt-1 text-xs text-[#777064] max-w-sm mx-auto">
                 {statusFilter !== 'all' || subjectQuery
                   ? 'No assignments match your current filters. Try resetting the filter.'
                   : 'Your workspace is clear. Create your first assignment to begin tracking coursework.'}
@@ -664,7 +658,7 @@ export default function DashboardPage() {
               <div className="mt-5">
                 <button
                   onClick={handleOpenCreate}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white text-xs font-semibold transition-all shadow-paper active:scale-[0.98]"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Add Assignment</span>
@@ -688,33 +682,33 @@ export default function DashboardPage() {
 
                 // Importance color coding
                 const importanceColors = {
-                  1: 'bg-slate-500/10 text-slate-400 border-slate-700',
-                  2: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-                  3: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-                  4: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-                  5: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+                  1: 'bg-[#EDE5D8] text-[#777064] border-[#DED5C7]',
+                  2: 'bg-[#EEF2EC] text-[#68745B] border-[#C5CDC0]',
+                  3: 'bg-[#EEF3EE] text-[#4E6B50] border-[#C0D1C2]',
+                  4: 'bg-[#FBF2E9] text-[#C87A3E] border-[#E7CCA8]',
+                  5: 'bg-[#FBEBE8] text-[#B94A3E] border-[#E8BDB7]',
                 };
 
                 return (
                   <div
                     key={assignment.id}
-                    className={`rounded-xl border p-5 transition-all flex flex-col justify-between ${
+                    className={`rounded-xl border p-5 transition-all duration-150 flex flex-col justify-between shadow-paper hover:shadow-paper-elevated ${
                       isCompleted
-                        ? 'border-slate-800/60 bg-[#0b111e]/40 opacity-75'
+                        ? 'border-[#EAE2D5] bg-[#F7F3EB]/60 opacity-80'
                         : isOverdue
-                        ? 'border-rose-500/30 bg-[#0f172a]/80 shadow-sm'
-                        : 'border-slate-800 bg-[#0f172a]/70 hover:border-slate-700 shadow-sm'
+                        ? 'border-[#E8BDB7] bg-[#FDF8F5]'
+                        : 'border-[#DED5C7] bg-[#FFFCF6] hover:border-[#C9BEAD]'
                     }`}
                   >
                     <div>
                       {/* Card Header: Subject, Status Toggle, Actions */}
                       <div className="flex items-center justify-between gap-2 mb-2.5">
                         <div className="flex items-center gap-1.5 truncate max-w-[170px]">
-                          <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-brand-500/10 text-brand-300 border border-brand-500/20 truncate">
+                          <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-[#F9F3EC] text-[#B78A65] border border-[#DFCEBD] truncate">
                             {assignment.subject}
                           </span>
                           {isOverdue && !isCompleted && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-0.5">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#FBEBE8] text-[#B94A3E] border border-[#E8BDB7] flex items-center gap-0.5">
                               <Flame className="h-2.5 w-2.5" /> Overdue
                             </span>
                           )}
@@ -723,14 +717,14 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => handleOpenEdit(assignment)}
-                            className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            className="p-1.5 rounded-md text-[#777064] hover:text-[#302C27] hover:bg-[#EDE5D8] transition-colors"
                             title="Edit assignment"
                           >
                             <Edit3 className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => handleDelete(assignment.id, assignment.title)}
-                            className="p-1.5 rounded-md text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+                            className="p-1.5 rounded-md text-[#777064] hover:text-[#B94A3E] hover:bg-[#FBEBE8] transition-colors"
                             title="Delete assignment"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -742,18 +736,18 @@ export default function DashboardPage() {
                       <div className="flex items-start gap-2.5 mt-2">
                         <button
                           onClick={() => handleToggleStatus(assignment)}
-                          className="mt-0.5 text-slate-400 hover:text-brand-400 transition-colors shrink-0"
+                          className="mt-0.5 text-[#9A9285] hover:text-[#4E6B50] transition-colors shrink-0"
                           title={isCompleted ? 'Mark as pending' : 'Mark as completed'}
                         >
                           {isCompleted ? (
-                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                            <CheckCircle2 className="h-4 w-4 text-[#4E6B50]" />
                           ) : (
-                            <Circle className="h-4 w-4 text-slate-500" />
+                            <Circle className="h-4 w-4 text-[#C2BAAC] hover:text-[#68745B]" />
                           )}
                         </button>
                         <h3
-                          className={`text-sm font-semibold text-white leading-snug break-words ${
-                            isCompleted ? 'line-through text-slate-400' : ''
+                          className={`text-sm font-semibold text-[#302C27] leading-snug break-words ${
+                            isCompleted ? 'line-through text-[#9A9285]' : ''
                           }`}
                         >
                           {assignment.title}
@@ -762,22 +756,22 @@ export default function DashboardPage() {
 
                       {/* Description if present */}
                       {assignment.description && (
-                        <p className="mt-2 text-xs text-slate-400 line-clamp-2 pl-6">
+                        <p className="mt-2 text-xs text-[#777064] line-clamp-2 pl-6">
                           {assignment.description}
                         </p>
                       )}
                     </div>
 
                     {/* Card Footer: Metadata */}
-                    <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <div className="mt-4 pt-3 border-t border-[#EAE2D5] flex items-center justify-between text-xs text-[#777064]">
                       <div className="flex items-center gap-1.5" title="Due Date">
-                        <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                        <Calendar className="h-3.5 w-3.5 text-[#9A9285]" />
                         <span>{dueDateFormatted}</span>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1" title="Remaining / Estimated minutes">
-                          <Clock className="h-3.5 w-3.5 text-slate-500" />
+                          <Clock className="h-3.5 w-3.5 text-[#9A9285]" />
                           <span>
                             {assignment.remainingMinutes}m / {assignment.estimatedMinutes}m
                           </span>
@@ -785,12 +779,12 @@ export default function DashboardPage() {
 
                         {pri && !isCompleted && (
                           <span
-                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded border shadow-xs ${
                               pri.priorityScore >= 75
-                                ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                                ? 'bg-[#FBEBE8] text-[#B94A3E] border-[#E8BDB7]'
                                 : pri.priorityScore >= 50
-                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                                : 'bg-brand-500/10 text-brand-300 border-brand-500/30'
+                                ? 'bg-[#FBF2E9] text-[#C87A3E] border-[#E7CCA8]'
+                                : 'bg-[#EEF2EC] text-[#68745B] border-[#C5CDC0]'
                             }`}
                             title={`Priority Score: ${pri.priorityScore}/100. ${pri.priorityExplanation?.summary}`}
                           >
@@ -813,47 +807,47 @@ export default function DashboardPage() {
               })}
             </div>
           )}
-        </>
+        </div>
       )}
 
       {/* Creation & Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-[#0f172a] p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <h3 className="text-base font-semibold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#302C27]/40 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-lg rounded-2xl border border-[#DED5C7] bg-[#FFFCF6] p-6 shadow-paper-modal relative animate-scale-in">
+            <div className="flex items-center justify-between pb-4 border-b border-[#EAE2D5]">
+              <h3 className="text-base font-serif font-bold text-[#302C27]">
                 {editingId ? 'Edit Assignment' : 'Create New Assignment'}
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className="p-1.5 rounded-lg text-[#777064] hover:text-[#302C27] hover:bg-[#EDE5D8] transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {formError && (
-              <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-200">
+              <div className="mt-4 rounded-lg border border-[#E8BDB7] bg-[#FBEBE8] p-3 text-xs text-[#B94A3E]">
                 {formError}
               </div>
             )}
 
             <form onSubmit={handleSubmitForm} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Title *</label>
+                <label className="block text-xs font-medium text-[#302C27] mb-1">Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Distributed Systems Lab 3"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                  className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] placeholder-[#9A9285] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-[#302C27] mb-1">
                     Subject / Course *
                   </label>
                   <input
@@ -862,12 +856,12 @@ export default function DashboardPage() {
                     placeholder="e.g. CS450"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                    className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] placeholder-[#9A9285] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-[#302C27] mb-1">
                     Due Date *
                   </label>
                   <input
@@ -875,14 +869,14 @@ export default function DashboardPage() {
                     required
                     value={formData.dueDate}
                     onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                    className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-[#302C27] mb-1">
                     Estimated Time (mins) *
                   </label>
                   <input
@@ -895,16 +889,15 @@ export default function DashboardPage() {
                       setFormData({
                         ...formData,
                         estimatedMinutes: val,
-                        // If creating and remaining hasn't been modified or equals previous estimated, update remaining too
                         remainingMinutes: !editingId ? val : formData.remainingMinutes,
                       });
                     }}
-                    className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                    className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-[#302C27] mb-1">
                     Remaining Time (mins)
                   </label>
                   <input
@@ -918,12 +911,12 @@ export default function DashboardPage() {
                         remainingMinutes: parseInt(e.target.value, 10) || 0,
                       })
                     }
-                    className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500"
+                    className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-[#302C27] mb-1">
                     Importance (1-5)
                   </label>
                   <select
@@ -931,7 +924,7 @@ export default function DashboardPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, importance: parseInt(e.target.value, 10) })
                     }
-                    className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-brand-500"
+                    className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors shadow-xs"
                   >
                     <option value={1}>1 - Low Priority</option>
                     <option value={2}>2 - Minor</option>
@@ -943,7 +936,7 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-[#302C27] mb-1">
                   Description / Notes (Optional)
                 </label>
                 <textarea
@@ -951,22 +944,22 @@ export default function DashboardPage() {
                   placeholder="Additional assignment details, rubric requirements, etc."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full rounded-lg border border-slate-700 bg-[#090d16] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 resize-none"
+                  className="w-full rounded-lg border border-[#DED5C7] bg-[#FAF6EE] px-3 py-2 text-xs text-[#302C27] placeholder-[#9A9285] focus:outline-none focus:border-[#68745B] focus:ring-1 focus:ring-[#68745B]/20 transition-colors resize-none shadow-xs"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#EAE2D5]">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-[#777064] hover:text-[#302C27] hover:bg-[#EDE5D8] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-colors shadow-sm disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#68745B] hover:bg-[#56614A] text-white font-semibold text-xs transition-all shadow-paper active:scale-[0.98] disabled:opacity-60"
                 >
                   {submitting ? (
                     <>

@@ -9,11 +9,11 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#090d16] flex flex-col items-center justify-center p-4">
-        <div className="h-12 w-12 rounded-xl bg-brand-600/20 border border-brand-500/40 flex items-center justify-center text-brand-400 mb-4 animate-pulse">
-          <Compass className="h-6 w-6 animate-spin text-brand-400" />
+      <div className="min-h-screen bg-[#F5F0E7] flex flex-col items-center justify-center p-4">
+        <div className="h-12 w-12 rounded-xl bg-[#EEF2EC] border border-[#C5CDC0] flex items-center justify-center text-[#68745B] mb-4 shadow-sm">
+          <Compass className="h-6 w-6 animate-spin text-[#68745B]" />
         </div>
-        <p className="text-sm font-medium text-slate-400">Verifying session...</p>
+        <p className="text-xs font-medium text-[#777064]">Verifying workspace session...</p>
       </div>
     );
   }
