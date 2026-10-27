@@ -2,10 +2,10 @@
   "name": "coursepilot-server",
   "version": "1.0.0",
   "private": true,
-  "main": "src/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "nodemon": "^3.1.14",
     "supertest": "^7.0.0"
   },
   "jest": {

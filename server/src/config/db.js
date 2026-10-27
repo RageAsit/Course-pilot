@@ -11,6 +11,16 @@ const CONNECTION_STATES = {
 };
 
 /**
+ * Strips user credentials or tokens from connection error messages if present
+ * @param {string} msg
+ * @returns {string}
+ */
+const sanitizeMessage = (msg) => {
+  if (typeof msg !== 'string') return '';
+  return msg.replace(/mongodb(\+srv)?:\/\/[^@]+@/gi, 'mongodb$1://<credentials>@');
+};
+
+/**
  * Returns current MongoDB connection status
  * @returns {{ state: string, isConnected: boolean }}
  */
@@ -42,7 +52,8 @@ const connectDB = async (uri = process.env.MONGODB_URI) => {
     console.log(`[Database] MongoDB connected: ${conn.connection.host}`);
     return conn.connection;
   } catch (error) {
-    console.error(`[Database Error] MongoDB connection failure: ${error.message}`);
+    const safeMsg = sanitizeMessage(error.message);
+    console.error(`[Database Error] MongoDB connection failure: ${safeMsg}`);
     // Do not swallow the error during deliberate server boot
     throw error;
   }

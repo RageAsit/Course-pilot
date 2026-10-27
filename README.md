@@ -66,17 +66,27 @@ Review and adjust variables:
 *Note: For Phase 1 verification, the server runs out-of-the-box and accurately reports `database.ready: false` if `MONGODB_URI` has not yet been set.*
 
 ### 3. Run Development Servers
-To run both the Express backend and React Vite client concurrently:
+
+#### Option A: Run Services Independently (Recommended)
+You can navigate into each folder and run them in separate terminals:
+
 ```bash
+# Terminal 1 — Backend (http://localhost:5000)
+cd server
+npm run dev              # or: npx nodemon index.js
+
+# Terminal 2 — Frontend (http://localhost:5173)
+cd client
 npm run dev
 ```
 
-Or run them individually:
+#### Option B: Run Concurrently from Project Root
 ```bash
-# Start backend server (http://localhost:5000)
-npm run dev:server
+# Run both Backend and Frontend concurrently from root
+npm run dev
 
-# Start frontend client (http://localhost:5173)
+# Or run individual workspaces from root
+npm run dev:server
 npm run dev:client
 ```
 
@@ -127,6 +137,8 @@ coursePilot/
 │   │   ├── app.js              # Express app setup (importable without side-effects)
 │   │   └── server.js           # Server listen & lifecycle entrypoint
 │   ├── tests/                  # Integration tests (health.test.js)
+│   ├── index.js                # Server entrypoint for nodemon/independent execution
+│   ├── nodemon.json            # Nodemon file watcher configuration
 │   └── package.json
 ├── docs/
 │   └── ARCHITECTURE.md         # Full system architectural specification
