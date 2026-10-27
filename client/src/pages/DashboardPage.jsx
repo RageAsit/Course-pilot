@@ -246,6 +246,23 @@ export default function DashboardPage() {
   const pendingCount = assignments.filter((a) => a.status === 'pending').length;
   const completedCount = assignments.filter((a) => a.status === 'completed').length;
 
+  // Deadline & Conflict Awareness
+  const now = new Date();
+  const overdueAssignments = useMemo(
+    () => assignments.filter((a) => a.status === 'pending' && new Date(a.dueDate) < now),
+    [assignments, now]
+  );
+  const dueSoonAssignments = useMemo(
+    () =>
+      assignments.filter((a) => {
+        if (a.status !== 'pending') return false;
+        const due = new Date(a.dueDate);
+        const diffHours = (due - now) / (1000 * 60 * 60);
+        return diffHours >= 0 && diffHours <= 24;
+      }),
+    [assignments, now]
+  );
+
   return (
     <div className="space-y-6">
       {/* Top Banner / Header */}
@@ -267,6 +284,58 @@ export default function DashboardPage() {
           <span>New Assignment</span>
         </button>
       </div>
+
+      {/* Immediate Deadline & Conflict Alert Banner */}
+      {(overdueAssignments.length > 0 || dueSoonAssignments.length > 0) && (
+        <div className="rounded-xl border border-rose-500/30 bg-gradient-to-r from-rose-950/40 via-[#0f172a] to-[#0f172a] p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-lg shadow-rose-950/20">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-400 shrink-0">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h4 className="text-sm font-bold text-white">Action Required</h4>
+                {overdueAssignments.length > 0 && (
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+                    <Flame className="h-3 w-3" />
+                    {overdueAssignments.length} Overdue
+                  </span>
+                )}
+                {dueSoonAssignments.length > 0 && (
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {dueSoonAssignments.length} Due within 24h
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                {overdueAssignments.length > 0
+                  ? `You have ${overdueAssignments.length} overdue task(s) needing immediate attention or rescheduling.`
+                  : `You have ${dueSoonAssignments.length} assignment(s) due today. Review study schedules to prevent missed deadlines.`}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setViewMode('priorities');
+                fetchPriorities();
+              }}
+              className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 text-xs font-semibold transition-colors flex items-center gap-1.5"
+            >
+              <Zap className="h-3.5 w-3.5 text-rose-400" />
+              <span>Inspect Priorities</span>
+            </button>
+            <Link
+              to="/schedule"
+              className="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+            >
+              <span>Auto-Plan Study</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Filters & Search */}
       <div className="rounded-xl border border-slate-800 bg-[#0f172a]/70 p-4 backdrop-blur-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
