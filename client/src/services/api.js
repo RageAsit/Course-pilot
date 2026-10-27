@@ -153,6 +153,19 @@ class ApiClient {
     return this.delete(`/api/assignments/${id}`);
   }
 
+  // --- Planner API ---
+  async getPriorities() {
+    return this.get('/api/planner/priorities');
+  }
+
+  async generatePlan(settings = {}) {
+    return this.post('/api/planner/generate', settings);
+  }
+
+  async getCurrentPlan() {
+    return this.get('/api/planner/current');
+  }
+
   // --- Health API ---
   async checkHealth() {
     return this.get('/api/health');

@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const healthRoutes = require('./routes/healthRoutes');
 const authRoutes = require('./routes/auth.routes');
 const assignmentRoutes = require('./routes/assignment.routes');
+const plannerRoutes = require('./routes/planner.routes');
 const errorHandler = require('./middleware/errorHandler');
 const notFoundHandler = require('./middleware/notFoundHandler');
 
@@ -36,6 +37,7 @@ app.use(
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/assignments', assignmentRoutes);
+app.use('/api/planner', plannerRoutes);
 
 // Fallback for unknown API routes
 app.use(notFoundHandler);
