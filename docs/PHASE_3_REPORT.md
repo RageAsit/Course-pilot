@@ -59,12 +59,11 @@ $$S = \text{clamp}(0, 100, S_{\text{urgency}} + S_{\text{importance}} + S_{\text
 
 1. **Deadline Urgency ($S_{\text{urgency}} \in [0, 40]$)**:
    Measures time remaining until assignment due date relative to the reference timestamp:
-   - $\Delta t \le 0$ (Overdue): $S_{\text{urgency}} = 40$ (maximum urgency)
-   - $0 < \Delta t \le 24\text{h}$: $S_{\text{urgency}} = 35 + \left(1 - \frac{\Delta t}{24}\right) \times 5 \in [35, 40]$
-   - $24\text{h} < \Delta t \le 72\text{h}$ (1–3 days): $S_{\text{urgency}} = 25 + \left(1 - \frac{\Delta t - 24}{48}\right) \times 10 \in [25, 35]$
-   - $72\text{h} < \Delta t \le 168\text{h}$ (3–7 days): $S_{\text{urgency}} = 15 + \left(1 - \frac{\Delta t - 72}{96}\right) \times 10 \in [15, 25]$
-   - $168\text{h} < \Delta t \le 336\text{h}$ (7–14 days): $S_{\text{urgency}} = 5 + \left(1 - \frac{\Delta t - 168}{168}\right) \times 10 \in [5, 15]$
-   - $\Delta t > 336\text{h}$ (> 2 weeks): $S_{\text{urgency}} = \max\left(0, 5 - \frac{\Delta t - 336}{168}\right) \in [0, 5]$
+   - $\Delta t \le 0$ (Overdue): $S_{\text{urgency}} = 40$ (exact maximum urgency)
+   - $0 < \Delta t \le 24\text{h}$: $S_{\text{urgency}} = \min\left(40, \text{round}\left(40 - \frac{\Delta t}{24} \times 10\right)\right) \in [30, 40]$
+   - $24\text{h} < \Delta t \le 72\text{h}$ (1–3 days): $S_{\text{urgency}} = \min\left(30, \text{round}\left(30 - \frac{\Delta t - 24}{48} \times 10\right)\right) \in [20, 30]$
+   - $72\text{h} < \Delta t \le 168\text{h}$ (3–7 days): $S_{\text{urgency}} = \min\left(20, \text{round}\left(20 - \frac{\Delta t - 72}{96} \times 10\right)\right) \in [10, 20]$
+   - $\Delta t > 168\text{h}$ (> 7 days): $S_{\text{urgency}} = \max\left(1, \min\left(10, \text{round}\left(10 - \frac{\Delta t - 168}{336} \times 9\right)\right)\right) \in [1, 10]$
    - Invalid or missing date: Safely defaults to $S_{\text{urgency}} = 10$.
 
 2. **Academic Importance ($S_{\text{importance}} \in [6, 30]$)**:
@@ -77,16 +76,21 @@ $$S = \text{clamp}(0, 100, S_{\text{urgency}} + S_{\text{importance}} + S_{\text
    - Level 5 (Critical / Exam): 30 pts
 
 3. **Remaining Effort ($S_{\text{effort}} \in [0, 20]$)**:
-   Sub-linear logarithmic-style curve to reward tackling substantial coursework without allowing effort to overwhelm urgent deadlines:
-   $$S_{\text{effort}} = \min\left(20, \left\lfloor\frac{\text{remainingMinutes}}{30}\right\rfloor \times 1.5\right)$$
-   - $\le 30$ mins: 1 pt
-   - 120 mins: 6 pts
-   - 240 mins: 12 pts
-   - $\ge 400$ mins: 20 pts (capped)
+   Smooth, capped effort curve based on remaining focus minutes:
+   $$S_{\text{effort}} = \min\left(20, \max\left(1, \text{round}\left(\frac{\text{remainingMinutes}}{300} \times 20\right)\right)\right)$$
+   - $\le 0$ mins: 0 pts
+   - 15 mins: 1 pt
+   - 60 mins: 4 pts
+   - 90 mins: 6 pts
+   - 180 mins: 12 pts
+   - $\ge 300$ mins (5 hours): 20 pts (max capped)
 
 4. **Overdue Penalty Bonus ($S_{\text{overdue}} \in [0, 10]$)**:
    Applies exclusively when $\Delta t < 0$:
-   $$S_{\text{overdue}} = \min\left(10, 5 + \left\lfloor\frac{|\Delta t|}{24}\right\rfloor \times 2\right)$$
+   $$S_{\text{overdue}} = \min\left(10, 5 + \min\left(5, \left\lfloor\frac{|\Delta t|}{24}\right\rfloor\right)\right)$$
+   - Overdue by < 24h: 5 pts
+   - Overdue by 1 day: 6 pts
+   - Overdue by 5+ days: 10 pts max.
    Guarantees overdue assignments receive prominent ranking at the top of the queue.
 
 ### Completed Assignments Rule:
@@ -101,8 +105,8 @@ When two assignments have identical priority scores, ties are resolved determini
 
 ### Formula Trade-Offs & Design Rationale:
 - **Urgency Dominance**: Urgency (40%) and overdue bonus (10%) account for 50% of the total score. This prevents students from ignoring imminent deadlines in favor of high-effort but distant tasks.
-- **Effort Ceiling**: Effort is capped at 20 points. While a 10-hour project requires substantial focus, an upcoming 1-hour quiz due in 4 hours must rank higher.
-- **Explainability**: Every factor contributes linearly or piecewise-linearly, enabling CoursePilot to render exact point breakdowns and natural language rationales (e.g., *"Critical: Due in 18h (36 pts). Importance: 4/5 (24 pts), Effort: 90m (4 pts)"*).
+- **Exact Additivity**: Because $40 + 30 + 20 + 10 = 100$, the sum of maximum components equals exactly 100, so the displayed factor breakdown always sums to the exact total score.
+- **Explainability**: Every factor contributes linearly or piecewise-linearly, enabling CoursePilot to render exact point breakdowns and natural language rationales (e.g., *"OVERDUE by 25h: Urgency (40/40) + Overdue Bonus (6/10) + Importance (24/30) + Effort (6/20) = 76/100 pts"*).
 
 ---
 
@@ -160,7 +164,7 @@ flowchart TD
   "count": 2,
   "priorities": [
     {
-      "id": "6ae0c23b4fc79b28da74a99e",
+      "id": "6ae0c46be78d052f6a1ba08c",
       "title": "Software Eng Milestone 2",
       "subject": "CS450",
       "dueDate": "2026-10-26T15:00:00.000Z",
@@ -168,23 +172,23 @@ flowchart TD
       "remainingMinutes": 90,
       "importance": 4,
       "status": "pending",
-      "priorityScore": 80,
+      "priorityScore": 76,
       "priorityBreakdown": {
-        "urgency": 45,
+        "urgency": 40,
         "importance": 24,
-        "effort": 5,
+        "effort": 6,
         "overdue": 6,
         "hoursRemaining": -25.2
       },
-      "prioritySummary": "OVERDUE by 25h (51 pts). Importance: 4/5 (24 pts), Effort: 90m (5 pts).",
+      "prioritySummary": "OVERDUE by 25h: Urgency (40/40) + Overdue Bonus (6/10) + Importance (24/30) + Effort (6/20) = 76/100 pts.",
       "priorityExplanation": {
-        "score": 80,
-        "urgencyScore": 45,
+        "score": 76,
+        "urgencyScore": 40,
         "importanceScore": 24,
-        "effortScore": 5,
+        "effortScore": 6,
         "overdueBonus": 6,
         "hoursRemaining": -25.2,
-        "summary": "OVERDUE by 25h (51 pts). Importance: 4/5 (24 pts), Effort: 90m (5 pts).",
+        "summary": "OVERDUE by 25h: Urgency (40/40) + Overdue Bonus (6/10) + Importance (24/30) + Effort (6/20) = 76/100 pts.",
         "isOverdue": true
       }
     }

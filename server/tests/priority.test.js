@@ -35,9 +35,68 @@ describe('Priority Engine Service', () => {
 
       const result = calculatePriority(overdueAssignment, referenceDate);
       expect(result.isOverdue).toBe(true);
-      expect(result.breakdown.urgency).toBe(45); // Max urgency
+      expect(result.breakdown.urgency).toBe(40); // Max urgency is 40
       expect(result.breakdown.overdue).toBeGreaterThanOrEqual(5); // Overdue penalty
+      expect(result.score).toBe(
+        result.breakdown.urgency +
+          result.breakdown.importance +
+          result.breakdown.effort +
+          result.breakdown.overdue
+      );
       expect(result.score).toBeGreaterThanOrEqual(70);
+    });
+
+    it('should maintain exact mathematical sum equality: score = urgency + importance + effort + overdue', () => {
+      const task = {
+        title: 'Midterm Prep',
+        status: 'pending',
+        importance: 5, // 30
+        dueDate: '2026-10-28T00:00:00.000Z', // 12h away -> urgency in [30, 40]
+        remainingMinutes: 180, // effort 12
+      };
+
+      const result = calculatePriority(task, referenceDate);
+      const expectedSum =
+        result.breakdown.urgency +
+        result.breakdown.importance +
+        result.breakdown.effort +
+        result.breakdown.overdue;
+
+      expect(result.score).toBe(expectedSum);
+      expect(result.breakdown.urgency).toBeLessThanOrEqual(40);
+      expect(result.breakdown.importance).toBeLessThanOrEqual(30);
+      expect(result.breakdown.effort).toBeLessThanOrEqual(20);
+      expect(result.breakdown.overdue).toBeLessThanOrEqual(10);
+      expect(result.summary).toContain(`${result.score}/100 pts`);
+    });
+
+    it('should scale effort correctly and cap at 20 points for 300+ minutes', () => {
+      const smallTask = calculatePriority(
+        { status: 'pending', importance: 3, dueDate: '2026-10-30T12:00:00Z', remainingMinutes: 15 },
+        referenceDate
+      );
+      const mediumTask = calculatePriority(
+        { status: 'pending', importance: 3, dueDate: '2026-10-30T12:00:00Z', remainingMinutes: 150 },
+        referenceDate
+      );
+      const maxTask = calculatePriority(
+        { status: 'pending', importance: 3, dueDate: '2026-10-30T12:00:00Z', remainingMinutes: 300 },
+        referenceDate
+      );
+      const overMaxTask = calculatePriority(
+        { status: 'pending', importance: 3, dueDate: '2026-10-30T12:00:00Z', remainingMinutes: 900 },
+        referenceDate
+      );
+      const zeroTask = calculatePriority(
+        { status: 'pending', importance: 3, dueDate: '2026-10-30T12:00:00Z', remainingMinutes: 0 },
+        referenceDate
+      );
+
+      expect(smallTask.breakdown.effort).toBe(1);
+      expect(mediumTask.breakdown.effort).toBe(10);
+      expect(maxTask.breakdown.effort).toBe(20);
+      expect(overMaxTask.breakdown.effort).toBe(20); // capped at 20
+      expect(zeroTask.breakdown.effort).toBe(0);
     });
 
     it('should rank urgent assignments higher than distant assignments', () => {
@@ -124,6 +183,7 @@ describe('Priority Engine Service', () => {
       expect(() => calculatePriority(taskWithInvalidDate, referenceDate)).not.toThrow();
       const result = calculatePriority(taskWithInvalidDate, referenceDate);
       expect(result.score).toBeGreaterThan(0);
+      expect(result.breakdown.urgency).toBe(10);
       expect(result.breakdown.hoursRemaining).toBeNull();
     });
   });

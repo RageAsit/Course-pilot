@@ -30,49 +30,53 @@ const calculatePriority = (assignment, referenceDate = new Date()) => {
   const dueDate = assignment.dueDate ? new Date(assignment.dueDate) : null;
   const isValidDate = dueDate && !isNaN(dueDate.getTime());
 
-  let urgencyScore = 15;
+  let urgencyScore = 10;
   let overduePenalty = 0;
   let isOverdue = false;
   let hoursRemaining = 72;
 
-  // 2. Deadline Urgency (Max 45) & Overdue Penalty (Max 10)
+  // 2. Deadline Urgency (Strictly 0–40) & Overdue Penalty (Strictly 0–10)
   if (!isValidDate) {
-    urgencyScore = 15; // Default median urgency for invalid dates
+    urgencyScore = 10; // Default median baseline for missing/unparseable dates
   } else {
     const diffMs = dueDate.getTime() - now.getTime();
     hoursRemaining = diffMs / (1000 * 60 * 60);
 
     if (hoursRemaining < 0) {
-      // Overdue
+      // Overdue: Full 40 urgency points plus overdue bonus
       isOverdue = true;
-      urgencyScore = 45; // Full urgency
+      urgencyScore = 40;
       const overdueHours = Math.abs(Math.floor(hoursRemaining));
-      // Base penalty 5, plus up to 5 additional points for multi-day overdue
+      // Base penalty 5 points + 1 point per 24h overdue, capped at 10
       overduePenalty = Math.min(10, 5 + Math.min(5, Math.floor(overdueHours / 24)));
     } else if (hoursRemaining <= 24) {
-      // Due within 24 hours: 33 to 45 points
-      urgencyScore = Math.round(45 - (hoursRemaining / 24) * 12);
+      // Due within 24 hours: 30 to 40 points
+      urgencyScore = Math.min(40, Math.round(40 - (hoursRemaining / 24) * 10));
     } else if (hoursRemaining <= 72) {
-      // Due within 3 days: 21 to 33 points
-      urgencyScore = Math.round(33 - ((hoursRemaining - 24) / 48) * 12);
+      // Due within 3 days: 20 to 30 points
+      urgencyScore = Math.min(30, Math.round(30 - ((hoursRemaining - 24) / 48) * 10));
     } else if (hoursRemaining <= 168) {
-      // Due within 7 days: 11 to 21 points
-      urgencyScore = Math.round(21 - ((hoursRemaining - 72) / 96) * 10);
+      // Due within 7 days: 10 to 20 points
+      urgencyScore = Math.min(20, Math.round(20 - ((hoursRemaining - 72) / 96) * 10));
     } else {
-      // Beyond 7 days: 3 to 11 points
+      // Beyond 7 days: 1 to 10 points
       urgencyScore = Math.max(
-        3,
-        Math.round(11 - ((hoursRemaining - 168) / 168) * 8)
+        1,
+        Math.min(10, Math.round(10 - ((hoursRemaining - 168) / 336) * 9))
       );
     }
   }
 
-  // 3. Importance Factor (Max 30)
+  // Ensure bounds for urgency and overdue
+  urgencyScore = Math.min(40, Math.max(0, urgencyScore));
+  overduePenalty = Math.min(10, Math.max(0, overduePenalty));
+
+  // 3. Importance Factor (Strictly 6–30 for ratings 1–5)
   const rawImportance = parseInt(assignment.importance, 10) || 3;
   const clampedImportance = Math.min(5, Math.max(1, rawImportance));
   const importanceScore = clampedImportance * 6; // 1->6, 2->12, 3->18, 4->24, 5->30
 
-  // 4. Remaining Effort Factor (Max 15)
+  // 4. Remaining Effort Factor (Strictly 0–20)
   const remainingMinutes =
     typeof assignment.remainingMinutes === 'number'
       ? assignment.remainingMinutes
@@ -80,11 +84,12 @@ const calculatePriority = (assignment, referenceDate = new Date()) => {
 
   let effortScore = 0;
   if (remainingMinutes > 0) {
-    // 300 minutes (5 hours) reaches max effort weight of 15
-    effortScore = Math.min(15, Math.max(1, Math.round((remainingMinutes / 300) * 15)));
+    // 300 minutes (5 hours) reaches maximum effort weight of 20
+    effortScore = Math.min(20, Math.max(1, Math.round((remainingMinutes / 300) * 20)));
   }
 
   // 5. Total Combined Score (Clamped to 0–100)
+  // Max possible sum: 40 + 30 + 20 + 10 = 100
   const totalScore = Math.min(
     100,
     Math.max(0, urgencyScore + importanceScore + effortScore + overduePenalty)
@@ -94,13 +99,16 @@ const calculatePriority = (assignment, referenceDate = new Date()) => {
   let summary = '';
   if (isOverdue) {
     const overdueHours = Math.abs(Math.floor(hoursRemaining));
-    summary = `OVERDUE by ${overdueHours}h (${urgencyScore + overduePenalty} pts). Importance: ${clampedImportance}/5 (${importanceScore} pts), Effort: ${remainingMinutes}m (${effortScore} pts).`;
+    summary = `OVERDUE by ${overdueHours}h: Urgency (${urgencyScore}/40) + Overdue Bonus (${overduePenalty}/10) + Importance (${importanceScore}/30) + Effort (${effortScore}/20) = ${totalScore}/100 pts.`;
   } else if (hoursRemaining <= 24) {
-    summary = `Critical: Due in ${Math.max(1, Math.round(hoursRemaining))}h (${urgencyScore} pts). Importance: ${clampedImportance}/5 (${importanceScore} pts), Effort: ${remainingMinutes}m (${effortScore} pts).`;
+    const hrs = Math.max(1, Math.round(hoursRemaining));
+    summary = `Critical: Due in ${hrs}h. Urgency (${urgencyScore}/40) + Importance (${importanceScore}/30) + Effort (${effortScore}/20) = ${totalScore}/100 pts.`;
   } else if (hoursRemaining <= 72) {
-    summary = `Upcoming: Due in ${Math.round(hoursRemaining / 24)} days (${urgencyScore} pts). Importance: ${clampedImportance}/5 (${importanceScore} pts), Effort: ${remainingMinutes}m (${effortScore} pts).`;
+    const days = Math.round(hoursRemaining / 24);
+    summary = `Upcoming: Due in ${days} days. Urgency (${urgencyScore}/40) + Importance (${importanceScore}/30) + Effort (${effortScore}/20) = ${totalScore}/100 pts.`;
   } else {
-    summary = `Scheduled: Due in ${Math.round(hoursRemaining / 24)} days (${urgencyScore} pts). Importance: ${clampedImportance}/5 (${importanceScore} pts), Effort: ${remainingMinutes}m (${effortScore} pts).`;
+    const days = Math.round(hoursRemaining / 24);
+    summary = `Scheduled: Due in ${days} days. Urgency (${urgencyScore}/40) + Importance (${importanceScore}/30) + Effort (${effortScore}/20) = ${totalScore}/100 pts.`;
   }
 
   return {
