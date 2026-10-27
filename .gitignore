@@ -17,6 +17,9 @@ dist-ssr/
 build/
 *.local
 
+# Documentation and media artifacts (stored locally)
+docs/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
