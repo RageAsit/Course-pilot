@@ -4,6 +4,12 @@
 
 CoursePilot helps students navigate demanding university coursework by transforming chaotic assignment lists into an actionable, priority-ranked study roadmap with capacity-bounded focus sessions, conflict detection, and real-time workload analytics.
 
+## Live Deployment
+
+- **Live App:** [CoursePilot](https://course-pilot-six.vercel.app/login)
+- **Backend Health:** [CoursePilot API](https://coursepilot-api-xdmq.onrender.com/api/health)
+
+
 ---
 
 ## Features & Core Student Workflows
