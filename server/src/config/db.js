@@ -49,7 +49,7 @@ const connectDB = async (uri = process.env.MONGODB_URI) => {
       serverSelectionTimeoutMS: 5000, // Fail fast if connection cannot be established
     });
 
-    console.log(`[Database] MongoDB connected: ${conn.connection.host}`);
+    console.log("[Database] MongoDB connected successfully.");
     return conn.connection;
   } catch (error) {
     const safeMsg = sanitizeMessage(error.message);

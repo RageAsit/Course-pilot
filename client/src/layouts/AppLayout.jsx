@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, NavLink, Link } from 'react-router-dom';
+import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   Compass,
   LayoutDashboard,
@@ -8,15 +8,15 @@ import {
   BarChart3,
   Server,
   Database,
-  ArrowRight,
-  ShieldAlert,
   CheckCircle2,
   AlertCircle,
   Menu,
   X,
-  ExternalLink,
+  LogOut,
+  User,
 } from 'lucide-react';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,6 +25,14 @@ export default function AppLayout() {
     data: null,
     error: null,
   });
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   const fetchHealth = async () => {
     try {
@@ -41,14 +49,12 @@ export default function AppLayout() {
 
   useEffect(() => {
     fetchHealth();
-    // Poll health status periodically
-    const interval = setInterval(fetchHealth, 15000);
+    const interval = setInterval(fetchHealth, 20000);
     return () => clearInterval(interval);
   }, []);
 
   const navItems = [
     { name: 'Dashboard', to: '/', icon: LayoutDashboard, active: true },
-    { name: 'Assignments', to: '#', icon: CheckSquare, phase: 'Phase 3' },
     { name: 'Schedule', to: '#', icon: Calendar, phase: 'Phase 4' },
     { name: 'Analytics', to: '#', icon: BarChart3, phase: 'Phase 5' },
   ];
@@ -66,15 +72,28 @@ export default function AppLayout() {
             <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
               CoursePilot
               <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                P1
+                P2
               </span>
             </h1>
             <p className="text-xs text-slate-400">Academic Planning SaaS</p>
           </div>
         </div>
 
+        {/* User Card */}
+        {user && (
+          <div className="mx-3 mt-4 p-3 rounded-xl border border-slate-800/80 bg-[#0f172a]/80 flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-brand-600/20 text-brand-400 border border-brand-500/30 flex items-center justify-center font-bold text-xs uppercase">
+              {user.name ? user.name.charAt(0) : 'S'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-slate-100 truncate">{user.name}</p>
+              <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
+            </div>
+          </div>
+        )}
+
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5">
+        <nav className="flex-1 px-4 py-4 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             if (item.phase) {
@@ -167,10 +186,17 @@ export default function AppLayout() {
           </div>
         </div>
 
-        {/* Footer info */}
-        <div className="px-6 py-4 border-t border-slate-800/80 text-[11px] text-slate-400">
-          <p>CoursePilot Engineering Project</p>
-          <p className="text-slate-400">Phase 1: Architecture & Foundation</p>
+        {/* Footer with sign out */}
+        <div className="px-4 py-3 border-t border-slate-800/80 flex items-center justify-between">
+          <span className="text-[11px] text-slate-500">Phase 2: Auth & Models</span>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 transition-colors px-2 py-1 rounded-md hover:bg-slate-800/60"
+            title="Sign out of CoursePilot"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
 
@@ -189,34 +215,66 @@ export default function AppLayout() {
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
               <span>CoursePilot</span>
               <span>/</span>
-              <span className="text-slate-200 font-medium">Foundation Shell</span>
+              <span className="text-slate-200 font-medium">Academic Workspace</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/register"
-              className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors shadow-sm shadow-brand-900/30"
-            >
-              Get Started
-            </Link>
+          <div className="flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <div className="hidden md:block text-right">
+                  <p className="text-xs font-semibold text-slate-100">{user.name}</p>
+                  <p className="text-[11px] text-slate-400">{user.email}</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 text-slate-300 hover:text-rose-400 hover:border-rose-500/40 hover:bg-rose-500/10 transition-colors"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition-colors"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
         </header>
 
         {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-slate-800 bg-[#0c1220] px-4 py-3 space-y-1">
+          <div className="lg:hidden border-b border-slate-800 bg-[#0c1220] px-4 py-3 space-y-2">
+            {user && (
+              <div className="pb-2 border-b border-slate-800 text-xs">
+                <p className="font-semibold text-white">{user.name}</p>
+                <p className="text-slate-400">{user.email}</p>
+              </div>
+            )}
             {navItems.map((item) => (
-              <div key={item.name} className="py-2 text-sm text-slate-300">
+              <div key={item.name} className="py-1.5 text-sm text-slate-300">
                 {item.name} {item.phase && <span className="text-xs text-slate-500">({item.phase})</span>}
               </div>
             ))}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left py-2 text-sm text-rose-400 flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" /> Sign Out
+              </button>
+            )}
           </div>
         )}
 

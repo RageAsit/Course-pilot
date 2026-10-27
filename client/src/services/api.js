@@ -14,7 +14,20 @@ class ApiClient {
    * Internal request wrapper with credentials and unified error parsing
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    let url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+    if (options.params && typeof options.params === 'object') {
+      const searchParams = new URLSearchParams();
+      Object.entries(options.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          searchParams.append(key, value);
+        }
+      });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += (url.includes('?') ? '&' : '?') + queryString;
+      }
+    }
 
     const defaultHeaders = {
       'Content-Type': 'application/json',
@@ -61,7 +74,7 @@ class ApiClient {
 
       return data;
     } catch (err) {
-      if (!err.status) {
+      if (err.status === undefined) {
         // Network failure or CORS block
         const networkError = new Error(
           `Unable to connect to CoursePilot backend at ${this.baseUrl}. Please check that the server is running.`
@@ -82,6 +95,10 @@ class ApiClient {
     return this.request(endpoint, { ...options, method: 'POST', body });
   }
 
+  patch(endpoint, body, options = {}) {
+    return this.request(endpoint, { ...options, method: 'PATCH', body });
+  }
+
   put(endpoint, body, options = {}) {
     return this.request(endpoint, { ...options, method: 'PUT', body });
   }
@@ -90,10 +107,53 @@ class ApiClient {
     return this.request(endpoint, { ...options, method: 'DELETE' });
   }
 
-  /**
-   * Health Check helper
-   * @returns {Promise<{ status: string, service: string, timestamp: string, uptime: number, environment: string, database: { status: string, ready: boolean } }>}
-   */
+  // --- Auth API ---
+  async register(userData) {
+    return this.post('/api/auth/register', userData);
+  }
+
+  async login(credentials) {
+    return this.post('/api/auth/login', credentials);
+  }
+
+  async getMe() {
+    return this.get('/api/auth/me');
+  }
+
+  async logout() {
+    return this.post('/api/auth/logout');
+  }
+
+  // --- Assignment API ---
+  async getAssignments(params = {}) {
+    return this.get('/api/assignments', { params });
+  }
+
+  async getAssignmentById(id) {
+    return this.get(`/api/assignments/${id}`);
+  }
+
+  async createAssignment(data) {
+    return this.post('/api/assignments', data);
+  }
+
+  async updateAssignment(id, data) {
+    return this.patch(`/api/assignments/${id}`, data);
+  }
+
+  async completeAssignment(id) {
+    return this.patch(`/api/assignments/${id}/complete`);
+  }
+
+  async reopenAssignment(id) {
+    return this.patch(`/api/assignments/${id}/reopen`);
+  }
+
+  async deleteAssignment(id) {
+    return this.delete(`/api/assignments/${id}`);
+  }
+
+  // --- Health API ---
   async checkHealth() {
     return this.get('/api/health');
   }

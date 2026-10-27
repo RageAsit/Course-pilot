@@ -206,8 +206,8 @@ $$\text{Priority Score} = w_1 \cdot \text{Urgency}(t) + w_2 \cdot \text{Weight} 
 
 ## 9. Phase Roadmap Summary
 
-- [x] **Phase 1: Project Foundation & Architecture** (Current)
-- [ ] **Phase 2: Authentication & User Accounts**
-- [ ] **Phase 3: Assignment Management & Priority Engine**
+- [x] **Phase 1: Project Foundation & Architecture**
+- [x] **Phase 2: Authentication, MongoDB Models, and Assignment API** (Current)
+- [ ] **Phase 3: Assignment Prioritization & Scoring Engine**
 - [ ] **Phase 4: Study Schedule Generator & Conflict Detection**
 - [ ] **Phase 5: Productivity Analytics, Test Hardening & Production Deployment**

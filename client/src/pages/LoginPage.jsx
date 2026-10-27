@@ -1,10 +1,38 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Compass, Lock, Mail, ArrowLeft, Shield } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Compass, Lock, Mail, ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || '/';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
+
+    if (!email.trim() || !password) {
+      setFormError('Please enter both your email and password.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await login(email.trim(), password);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setFormError(err.message || 'Login failed. Please verify your credentials.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -23,20 +51,18 @@ export default function LoginPage() {
         </div>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Sign in to CoursePilot</h2>
         <p className="mt-1 text-xs text-slate-400">
-          Enter your student credentials to access your academic schedule
+          Enter your student credentials to manage coursework and deadlines
         </p>
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
         <div className="rounded-2xl border border-slate-800 bg-[#0f172a]/80 p-8 backdrop-blur-md shadow-xl">
-          {/* Phase 1 notice */}
-          <div className="mb-6 rounded-lg border border-brand-500/20 bg-brand-500/5 p-3 flex items-start gap-2.5">
-            <Shield className="h-4 w-4 text-brand-400 mt-0.5 shrink-0" />
-            <div className="text-xs text-slate-300">
-              <span className="font-semibold text-brand-300">Phase 1 Architecture Shell:</span>{' '}
-              JWT cookie authentication and user verification endpoints will be implemented in Phase 2.
+          {formError && (
+            <div className="mb-5 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-start gap-3">
+              <AlertCircle className="h-4 w-4 text-rose-400 mt-0.5 shrink-0" />
+              <div className="text-xs text-rose-200">{formError}</div>
             </div>
-          </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -47,9 +73,12 @@ export default function LoginPage() {
                 <Mail className="h-4 w-4 text-slate-500 absolute left-3 top-3" />
                 <input
                   type="email"
-                  disabled
+                  required
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@university.edu"
-                  className="w-full rounded-lg border border-slate-800 bg-[#090d16]/70 pl-9 pr-3 py-2 text-xs text-slate-400 placeholder-slate-600 cursor-not-allowed focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-[#090d16]/80 pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors"
                 />
               </div>
             </div>
@@ -60,19 +89,29 @@ export default function LoginPage() {
                 <Lock className="h-4 w-4 text-slate-500 absolute left-3 top-3" />
                 <input
                   type="password"
-                  disabled
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full rounded-lg border border-slate-800 bg-[#090d16]/70 pl-9 pr-3 py-2 text-xs text-slate-400 placeholder-slate-600 cursor-not-allowed focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-[#090d16]/80 pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              disabled
-              className="w-full mt-2 py-2 px-4 rounded-lg bg-brand-600/50 text-slate-400 font-semibold text-xs cursor-not-allowed border border-brand-500/30"
+              disabled={submitting}
+              className="w-full mt-2 py-2.5 px-4 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-colors shadow-sm shadow-brand-900/40 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Sign In (Active in Phase 2)
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Signing In...</span>
+                </>
+              ) : (
+                <span>Sign In</span>
+              )}
             </button>
           </form>
 
