@@ -244,11 +244,6 @@ The verified product walkthrough video is located at:
 - **Calendar Export**: Study sessions can be exported via iCal/Google Calendar sync in a future release.
 - **Offline Mode**: As a cloud-synchronized SaaS, an active internet connection is required to sync with MongoDB Atlas.
 
----
 
-## Final Project Submission
 
-- **Submission Form**: [Google Form Submission](https://forms.gle/sBy4sfqyiRG2Zpom9)
-- **Project Name**: CoursePilot
-- **Author**: Lead Software Engineer (RageAsit)
-- **Deadline**: October 27, 2026, 11:59 PM IST
+
