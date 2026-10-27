@@ -17,3 +17,5 @@ services:
         generateValue: true
       - key: CLIENT_ORIGIN
         sync: false
+      - key: CLIENT_URL
+        sync: false
