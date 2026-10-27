@@ -213,6 +213,12 @@ node scripts/demo-e2e.js
 
 ---
 
+## Product Demo Video
+
+Watch the CoursePilot demo: [View the demo on Google Drive](https://drive.google.com/file/d/1HQZnXCcxgyB9iKvFLDDUF_yzgVXtMNF2/view?usp=sharing)
+
+---
+  
 ## 30-Second Product Demo Video
 
 The verified product walkthrough video is located at:
