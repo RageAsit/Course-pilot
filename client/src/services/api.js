@@ -166,6 +166,11 @@ class ApiClient {
     return this.get('/api/planner/current');
   }
 
+  // --- Analytics API ---
+  async getAnalytics() {
+    return this.get('/api/analytics');
+  }
+
   // --- Health API ---
   async checkHealth() {
     return this.get('/api/health');

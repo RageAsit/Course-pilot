@@ -56,7 +56,7 @@ export default function AppLayout() {
   const navItems = [
     { name: 'Dashboard', to: '/', icon: LayoutDashboard },
     { name: 'Study Planner', to: '/schedule', icon: Calendar },
-    { name: 'Analytics', to: '#', icon: BarChart3, phase: 'Phase 5' },
+    { name: 'Analytics', to: '/analytics', icon: BarChart3 },
   ];
 
   return (
@@ -71,8 +71,8 @@ export default function AppLayout() {
           <div>
             <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
               CoursePilot
-              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                P3
+              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                PROD
               </span>
             </h1>
             <p className="text-xs text-slate-400">Academic Planning SaaS</p>
@@ -188,7 +188,7 @@ export default function AppLayout() {
 
         {/* Footer with sign out */}
         <div className="px-4 py-3 border-t border-slate-800/80 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500">Phase 3: Priority & Planner</span>
+          <span className="text-[11px] text-slate-500 font-medium">CoursePilot v1.0 (Live)</span>
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 transition-colors px-2 py-1 rounded-md hover:bg-slate-800/60"

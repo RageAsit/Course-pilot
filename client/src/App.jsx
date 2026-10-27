@@ -6,6 +6,7 @@ import PublicRoute from './components/PublicRoute';
 import AppLayout from './layouts/AppLayout';
 import DashboardPage from './pages/DashboardPage';
 import SchedulePage from './pages/SchedulePage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -44,6 +45,7 @@ export default function App() {
           >
             <Route index element={<DashboardPage />} />
             <Route path="schedule" element={<SchedulePage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
           </Route>
 
           {/* Fallback */}
